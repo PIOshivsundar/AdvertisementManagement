@@ -25,7 +25,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.Optional;
 
 /*
@@ -49,13 +48,6 @@ public class UserController {
         User user = userRepository.getUserByUserName(userName);
         modelAndView.addObject("user", user);
         modelAndView.addObject("title", "Dashboard");
-
-        Iterable<User> users = userRepository.findAll();
-        Iterator<User> iterator = users.iterator();
-        while (iterator.hasNext()){
-            System.out.println(iterator.next());
-        }
-
         return modelAndView;
     }
 
@@ -158,11 +150,11 @@ public class UserController {
 
     //To show the user profile
     @GetMapping("/show-user-profile")
-    public ModelAndView showUserProfile(Principal principal){
+    public ModelAndView showUserProfile(Principal principal) {
         ModelAndView modelAndView = new ModelAndView("normal/showUserProfile");
         String userName = principal.getName();
         User user = userRepository.getUserByUserName(userName);
-        modelAndView.addObject("user",user);
+        modelAndView.addObject("user", user);
         return modelAndView;
     }
 
@@ -178,7 +170,7 @@ public class UserController {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         }
         userRepository.save(user);
-        modelAndView.addObject("user",user);
+        modelAndView.addObject("user", user);
         return modelAndView;
     }
 }
