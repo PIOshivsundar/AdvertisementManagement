@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com" th:replace="normal/base::layout(~{::section})">
+<head>
+  <meta charset="UTF-8">
+  <title>userDashboard</title>
+</head>
+<body>
+<section>
+  <div class="card mr-3">
+    <div class="card-body">
+      <div class="container-fluid mt-1">
+        <div class="row">
+          <div class="col-md-10 offset-md-1">
+            <form th:action="@{/user/process-user-profile}" th:object="${advertisement}" enctype="multipart/form-data" method="post" class="mt-2">
+
+              <div class="text-center">
+                <h2 class="font-weight-bold" th:text="${user.name}"></h2>
+              </div>
+
+              <div class="text-center mt-2">
+                <img class="rounded-circle shadow-4-strong"  src="" th:src="@{'/image/'+${user.profile}}" alt="profile photo"/>
+              </div>
+              <!--                            image-->
+              <div class="custom-file text-center ">
+                <input type="file" name="profilePicture"/>
+              </div>
+
+              <div class="container text-center">
+                <button type="submit" class="btn btn-success">Add Profile</button>
+              </div>
+
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com" th:replace="normal/base::layout(~{::section})">
+<head>
+    <meta charset="UTF-8">
+    <title>userDashboard</title>
+</head>
+<body>
+<section>
+    <div class="card mr-3 ml-3">
+        <div class="card-body">
+            <h1 class="text-center">Your Advertisements</h1>
+            <table class="table">
+                <thead>
+<!--                <tr>-->
+<!--                    <th scope="col">Id</th>-->
+<!--                    <th scope="col">Title</th>-->
+<!--                    <th scope="col">Description</th>-->
+<!--                    <th scope="col">Action</th>-->
+<!--                </tr>-->
+                </thead>
+                <tbody>
+                <tr th:each="a : ${advertisementList}">
+<!--                    <th scope="row" th:text="${'AMS'+a.advertisementId}">1</th>-->
+                    <td >
+                        <img src="" th:src="@{'/image/'+${a.image}}" alt="profile photo"/>
+                        <span th:text="${a.title}"></span>
+                    </td>
+                    <td th:text="${a.description}"></td>
+                    <td>
+                        <a th:href="@{'/user/delete/'+${a.advertisementId}}" class="btn btn-danger btn-sm">Delete</a>
+                        <form method="post" th:action="@{'/user/update/'+${a.advertisementId}}" class="mt-2">
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+<!--            pagination-->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li th:if="${currentPage!=0}" class="page-item"><a th:href="@{'/user/showAdvertisements/'+${currentPage-1}}"  class="page-link" href="#">Previous</a></li>
+                    <li th:classappend="${currentPage==i-1?'active':''}" th:each="i:${#numbers.sequence(1,totalPages)}" class="page-item"><a th:href="@{'/user/showAdvertisements/'+${i-1}}" class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                    <li th:if="${currentPage+1 !=totalPages }" class="page-item"><a th:href="@{'/user/showAdvertisements/'+${currentPage+1}}" class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+
+
+        </div>
+    </div>
+</section>
+</body>
+</html>

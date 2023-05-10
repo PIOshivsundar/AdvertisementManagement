@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com" th:replace="base::layout(~{::section})">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+</head>
+<body>
+    <section>
+        <div class="card mr-3 ml-3">
+            <div class="card-body">
+                <table class="table table-success table-striped">
+                    <thead>
+                    <!--                <tr>-->
+                    <!--                    <th scope="col">Id</th>-->
+                    <!--                    <th scope="col">Title</th>-->
+                    <!--                    <th scope="col">Description</th>-->
+                    <!--                    <th scope="col">Action</th>-->
+                    <!--                </tr>-->
+                    </thead>
+                    <tbody>
+                    <tr th:each="a : ${allAdvertisements}">
+                        <!--                    <th scope="row" th:text="${'AMS'+a.advertisementId}">1</th>-->
+                        <td >
+                            <img src="" th:src="@{'/image/'+${a.image}}" alt="profile photo"/>
+                            <span th:text="${a.title}"></span>
+                        </td>
+                        <td th:text="${a.description}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

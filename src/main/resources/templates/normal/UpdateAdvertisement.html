@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.com" th:replace="normal/base::layout(~{::section})">
+<head>
+    <meta charset="UTF-8">
+    <title>update-Advertisement</title>
+</head>
+<body>
+<section>
+    <div class="card mr-3">
+        <div class="card-body">
+            <h1 class="text-center">Update your advertisement Advertisement</h1>
+            <div class="container-fluid mt-1">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <form th:action="@{/user/process-update}" th:object="${advertisement}" enctype="multipart/form-data" method="post" class="mt-2">
+                            <input type="hidden" th:value="${advertisement.advertisementId}" name="advertisementId"/>
+                            <!--Title field-->
+                            <div class="form-group">
+                                <label for="exampleInputName1">Name</label>
+                                <input type="text"
+                                       name="title"
+                                       class="form-control"
+                                       id="exampleInputName1"
+                                       aria-describedby="nameHelp"
+                                       th:value="${advertisement.title}"
+                                       required>
+                            </div>
+
+                            <!--description field-->
+                            <div class="form-group">
+                                <label for="exampleInputName1">Description</label>
+                                <textarea id="mytextarea" class="form-control"
+                                          name="description"
+                                          th:text="${advertisement.description}"
+                                          rows="4">
+                                 </textarea>
+                            </div>
+
+                            <!--                            image-->
+                            <div class="custom-file">
+                                <input type="file" name="AdvertisementImage"/>
+
+                            </div>
+
+                            <div class="container text-center">
+                                <button type="submit" class="btn btn-success">Save Advertisement</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
