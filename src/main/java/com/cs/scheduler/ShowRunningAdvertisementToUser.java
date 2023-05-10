@@ -1,7 +1,9 @@
 package com.cs.scheduler;
 
 
+import com.cs.entities.Advertisement;
 import com.cs.entities.User;
+import com.cs.repositories.AdvertisementRepository;
 import com.cs.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,11 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ShowRunningAdvertisementToUser {
@@ -23,26 +29,38 @@ public class ShowRunningAdvertisementToUser {
     private UserRepository userRepository;
 
     @Autowired
+    private AdvertisementRepository advertisementRepository;
+    @Autowired
     private JavaMailSender javaMailSender;
 
-    //Send email to all the users that how many advertisement currently is running...
-//    @Scheduled(cron = "0/15 * * * * *")
-    //@Scheduled(cron = "0 0 10 * * SUN") // 10AM
+
+//    @Scheduled(cron = "0 0 10 * * SUN") // 10AM
+    @Scheduled(initialDelay = 1000,fixedDelay = 40000)
     public void showAdvertisementToUser() throws MessagingException, UnsupportedEncodingException {
         Iterable<User> userList = userRepository.findAll();
-        for(User user: userList){
-            MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-            helper.setFrom("admsapplication@gmail.com", "AMS App");
-            helper.setTo(user.getEmail());
-            helper.setSubject("Advertisement Status");
-            String content = "<p>Hello, </p>"
-                    +"<p>"+(long) user.getAdvertisements().size()+"+ advertisement is currently is running...</p>";
-            helper.setText(content, true);
-            javaMailSender.send(message);
-
-            logger.info("Email: {}", new Date());
-        }
-        logger.info("Email has been sent to user: {}", new Date());
+         for (User user : userList) {
+             if(!user.getRole().equals("ROLE_ADMIN")){
+                 String email = user.getEmail();
+                 Optional<List<Advertisement>> advertisementList = advertisementRepository.findByUser(user);
+                 MimeMessage message = javaMailSender.createMimeMessage();
+                 MimeMessageHelper helper = new MimeMessageHelper(message);
+                 helper.setFrom("admsapplication@gmail.com", "AMS App");
+                 helper.setTo(email);
+                 helper.setSubject("Advertisement Status");
+                 if(advertisementList.isPresent()){
+                     String content = "<p>Hello, </p>"
+                             +advertisementList.get().size()+" <p>advertisements has been running currently... </p>";
+                     helper.setText(content, true);
+                     javaMailSender.send(message);
+                 }else{
+                     String content = "<p>Hello, </p>"
+                             +"<p>You don't have any advertisements running currently, please advertisement!  </p>";
+                     helper.setText(content, true);
+                     javaMailSender.send(message);
+                 }
+                 logger.info("Email has been sent to user: {}",user.getEmail());
+                 logger.info("Date: {}",new Date());
+             }
+         }
     }
 }
