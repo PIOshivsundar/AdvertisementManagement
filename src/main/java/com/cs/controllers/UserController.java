@@ -35,6 +35,9 @@ import java.util.Optional;
 @RequestMapping("/user")
 public class UserController {
 
+    private static final String TITLE = "title";
+    private static final String ADVERTISEMENT = "advertisement";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -47,7 +50,7 @@ public class UserController {
         String userName = principal.getName();
         User user = userRepository.getUserByUserName(userName);
         modelAndView.addObject("user", user);
-        modelAndView.addObject("title", "Dashboard");
+        modelAndView.addObject(TITLE, "Dashboard");
         return modelAndView;
     }
 
@@ -57,8 +60,8 @@ public class UserController {
         String userName = principal.getName();
         User user = userRepository.getUserByUserName(userName);
         modelAndView.addObject("user", user);
-        modelAndView.addObject("title", "Add Advertisement");
-        modelAndView.addObject("advertisement", new Advertisement());
+        modelAndView.addObject(TITLE, "Add Advertisement");
+        modelAndView.addObject(ADVERTISEMENT, new Advertisement());
         return modelAndView;
 
     }
@@ -80,8 +83,8 @@ public class UserController {
             user.getAdvertisements().add(advertisement);
             userRepository.save(user);
             modelAndView.addObject("user", user);
-            modelAndView.addObject("title", "Add Advertisement");
-            modelAndView.addObject("advertisement", new Advertisement());
+            modelAndView.addObject(TITLE, "Add Advertisement");
+            modelAndView.addObject(ADVERTISEMENT, new Advertisement());
             session.setAttribute("message", new Message("Advertisement is added !! Add new one", "success"));
             return modelAndView;
         } catch (Exception e) {
@@ -103,8 +106,8 @@ public class UserController {
         modelAndView.addObject("currentPage", page);
         modelAndView.addObject("totalPages", advertisementList.getTotalPages());
         modelAndView.addObject("user", user);
-        modelAndView.addObject("title", "show Advertisements");
-        modelAndView.addObject("advertisement", new Advertisement());
+        modelAndView.addObject(TITLE, "show Advertisements");
+        modelAndView.addObject(ADVERTISEMENT, new Advertisement());
         return modelAndView;
     }
 
@@ -112,9 +115,13 @@ public class UserController {
     @GetMapping("/delete/{advertisementId}")
     public RedirectView deleteAdvertisement(@PathVariable("advertisementId") Integer advertisementId, RedirectView redirectView) {
         Optional<Advertisement> byId = advertisementRepository.findById(advertisementId);
-        Advertisement advertisement = byId.get();
-        advertisementRepository.delete(advertisement);
-        redirectView.setUrl("/user/showAdvertisements/0");
+        Advertisement advertisement;
+        if (byId.isPresent()) {
+            advertisement = byId.get();
+            advertisementRepository.delete(advertisement);
+            redirectView.setUrl("/user/showAdvertisements/0");
+            return redirectView;
+        }
         return redirectView;
     }
 
@@ -124,9 +131,13 @@ public class UserController {
         String userName = principal.getName();
         User user = userRepository.getUserByUserName(userName);
         Optional<Advertisement> byId = advertisementRepository.findById(advertisementId);
-        Advertisement advertisement = byId.get();
-        modelAndView.addObject("advertisement", advertisement);
-        modelAndView.addObject("user", user);
+        Advertisement advertisement;
+        if (byId.isPresent()) {
+            advertisement = byId.get();
+            modelAndView.addObject(ADVERTISEMENT, advertisement);
+            modelAndView.addObject("user", user);
+            return modelAndView;
+        }
         return modelAndView;
     }
 

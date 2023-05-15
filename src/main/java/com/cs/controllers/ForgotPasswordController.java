@@ -24,6 +24,10 @@ import java.util.Objects;
 @Controller
 public class ForgotPasswordController {
 
+    private static final String TITLE="title";
+    private static final String MESSAGE="message";
+    private static final String RESET_PASSWORD_FORM="reset_password_form";
+
     @Autowired
     private UserService userService;
 
@@ -33,7 +37,7 @@ public class ForgotPasswordController {
     //To display to forgot password form
     @GetMapping("/forgot-password")
     public ModelAndView showForgotPasswordForm(ModelAndView modelAndView) {
-        modelAndView.addObject("title", "Forgot-Password");
+        modelAndView.addObject(TITLE, "Forgot-Password");
         modelAndView.setViewName("forgot_password_form");
         return modelAndView;
     }
@@ -48,7 +52,7 @@ public class ForgotPasswordController {
             //send email
             String resetPasswordLink = Utility.getSiteURL(request) + "/reset_password?token=" + token;
             sendEmail(email, resetPasswordLink);
-            modelAndView.addObject("message", "we have sent a reset password link to your email. Please check. ");
+            modelAndView.addObject(MESSAGE, "we have sent a reset password link to your email. Please check. ");
 
         } catch (UserNotFoundException | MessagingException | UnsupportedEncodingException e) {
             modelAndView.addObject("error", e.getMessage());
@@ -77,13 +81,13 @@ public class ForgotPasswordController {
     public ModelAndView showResetPasswordForm(@Param(value = "token") String token, ModelAndView modelAndView) {
         User user = userService.get(token);
         if (user == null) {
-            modelAndView.addObject("title", "Rest your password");
-            modelAndView.addObject("message", "Invalid Token");
+            modelAndView.addObject(TITLE, "Rest your password");
+            modelAndView.addObject(MESSAGE, "Invalid Token");
             modelAndView.setViewName("invalid_token");
             return modelAndView;
         }
         modelAndView.addObject("token", token);
-        modelAndView.setViewName("reset_password_form");
+        modelAndView.setViewName(RESET_PASSWORD_FORM);
         return modelAndView;
     }
 
@@ -96,19 +100,19 @@ public class ForgotPasswordController {
 
         if (!Objects.equals(confirmPassword, password)) {
             modelAndView.addObject("error", "password is not matching!");
-            modelAndView.setViewName("reset_password_form");
+            modelAndView.setViewName(RESET_PASSWORD_FORM);
             return modelAndView;
         }
         User user = userService.get(token);
         if (user == null) {
-            modelAndView.addObject("title", "Reset your password");
-            modelAndView.addObject("message", "Invalid Token");
+            modelAndView.addObject(TITLE, "Reset your password");
+            modelAndView.addObject(MESSAGE, "Invalid Token");
             modelAndView.setViewName("invalid_token");
             return modelAndView;
         }
         userService.updatePassword(user, password);
-        modelAndView.addObject("message", "Password reset successfully!");
-        modelAndView.setViewName("reset_password_form");
+        modelAndView.addObject(MESSAGE, "Password reset successfully!");
+        modelAndView.setViewName(RESET_PASSWORD_FORM);
         return modelAndView;
     }
 }

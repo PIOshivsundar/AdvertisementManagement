@@ -13,13 +13,15 @@ import java.util.List;
 @Controller
 public class MainController {
 
+    private static final String TITLE="title";
+
     @Autowired
     private AdvertisementService advertisementService;
 
     //To get the home page
     @GetMapping("/")
     public ModelAndView home(ModelAndView modelAndView){
-        modelAndView.addObject("title","Home - Advertisement Management System");
+        modelAndView.addObject(TITLE,"Home - Advertisement Management System");
         List<Advertisement> allAdvertisements = advertisementService.getAllAdvertisements();
         modelAndView.addObject("allAdvertisements",allAdvertisements);
         modelAndView.setViewName("home.html");
@@ -29,7 +31,7 @@ public class MainController {
     //To get the about page
     @GetMapping("/about")
     public ModelAndView about(ModelAndView modelAndView){
-        modelAndView.addObject("title","About - Advertisement Management System");
+        modelAndView.addObject(TITLE,"About - Advertisement Management System");
         modelAndView.setViewName("about.html");
         return modelAndView;
     }
@@ -37,7 +39,7 @@ public class MainController {
     //To get the signup page
     @GetMapping("/signup")
     public ModelAndView signUp(ModelAndView modelAndView){
-        modelAndView.addObject("title","SignUp - Advertisement Management System");
+        modelAndView.addObject(TITLE,"SignUp - Advertisement Management System");
         modelAndView.addObject("user",new User());
         modelAndView.setViewName("signup.html");
         return modelAndView;
@@ -46,9 +48,8 @@ public class MainController {
     //To get the login page
     @GetMapping("/signIn")
     public ModelAndView login(ModelAndView modelAndView){
-        modelAndView.addObject("title","Login-Advertisement Management System");
+        modelAndView.addObject(TITLE,"Login-Advertisement Management System");
         modelAndView.setViewName("signIn.html");
         return modelAndView;
     }
-
 }

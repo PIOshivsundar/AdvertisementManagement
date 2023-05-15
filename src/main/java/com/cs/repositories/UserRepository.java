@@ -1,7 +1,6 @@
 package com.cs.repositories;
 
 import com.cs.entities.User;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
