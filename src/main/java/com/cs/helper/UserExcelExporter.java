@@ -63,7 +63,6 @@ public class UserExcelExporter {
         writeDataRow();
         ServletOutputStream outputStream = response.getOutputStream();
         workbook.write(outputStream);
-        workbook.close();
         outputStream.close();
     }
 }
