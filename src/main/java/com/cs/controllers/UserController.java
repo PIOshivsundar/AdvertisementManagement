@@ -10,12 +10,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 /*
@@ -43,6 +46,9 @@ public class UserController {
 
     @Autowired
     private AdvertisementRepository advertisementRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/dashboard")
     public ModelAndView userDashboard(Principal principal) {
@@ -182,6 +188,34 @@ public class UserController {
         }
         userRepository.save(user);
         modelAndView.addObject("user", user);
+        return modelAndView;
+    }
+
+    //To show user setting
+    @GetMapping("/show-setting")
+    ModelAndView showSetting(Principal principal){
+        ModelAndView modelAndView = new ModelAndView("normal/showSetting");
+        String userName = principal.getName();
+        User user = userRepository.getUserByUserName(userName);
+        modelAndView.addObject("user", user);
+        return modelAndView;
+    }
+
+    @PostMapping("/process-change-password")
+    ModelAndView processChangePassword(HttpServletRequest  request, Principal principal){
+        ModelAndView modelAndView = new ModelAndView("normal/showSetting");
+        String userName = principal.getName();
+        User user = userRepository.getUserByUserName(userName);
+        String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
+        modelAndView.addObject("user", user);
+        if (!Objects.equals(confirmPassword, password)) {
+            modelAndView.addObject("error", "password is not matching!");
+            return modelAndView;
+        }
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        modelAndView.addObject("message", "Updated successfully!");
         return modelAndView;
     }
 }
