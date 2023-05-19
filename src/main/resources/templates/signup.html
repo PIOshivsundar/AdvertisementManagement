@@ -17,7 +17,7 @@
                   </div>
 
                 <h2 class="text-center">SignUp here</h2>
-                <form th:action="@{/do-signup}" method="post" th:object="${user}">
+                <form novalidate th:action="@{/do-signup}" method="post" th:object="${user}">
 <!--                    Name-->
                     <div class="mb-3">
                         <label for="exampleInputFirstName1" class="form-label">Name</label>
